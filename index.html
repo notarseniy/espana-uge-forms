@@ -1,0 +1,225 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/pdf-lib@1.11.0"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
+
+    <style>
+      body {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      p {
+        font-family: helvetica;
+        font-size: 24px;
+        text-align: center;
+        margin: 25px;
+      }
+
+      .small {
+        font-family: helvetica;
+        font-size: 18px;
+        text-align: center;
+        margin: 25px;
+      }
+
+      button {
+        background-color: #008CBA;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p>Click the button to fill form fields in an existing PDF document with <code>pdf-lib</code></p>
+    <button onclick="fillForm()">Fill PDF</button>
+    <p class="small">(Your browser will download the resulting file)</p>
+  </body>
+
+  <script>
+    const { PDFDocument } = PDFLib
+
+    async function fillForm() {
+    	// Fetch the PDF with form fields
+      const formUrl = 'https://notarseniy.github.io/espana-uge-forms/files/DECLARACION_DE_CARECER_ANTECEDENTES_DE_PENALES.pdf'
+      const formPdfBytes = await fetch(formUrl).then(res => res.arrayBuffer())
+
+      // Load a PDF with form fields
+      const pdfDoc = await PDFDocument.load(formPdfBytes)
+
+      // Get the form containing all the fields
+      const form = pdfDoc.getForm()
+
+      // Get all fields in the PDF by their names
+      const declaracionPenalesFields = {
+      	dex: {
+          nombreApellidos: form.getTextField('DEX_NOM_APE'),
+          nacionalidad: form.getTextField('DEX_NACION'),
+          passportNie: form.getTextField('DEX_PASANIE'),
+          addressDomicilio: form.getTextField('DEX_DOMIC'),
+          addressCp: form.getTextField('DEX_CP'),
+          addressLocalidad: form.getTextField('DEX_LOCAL'),
+          addressProvincia: form.getTextField('DEX_PROV'),
+        },
+        fir: {
+        	provincia: form.getTextField('FIR_PROV'),
+        	dia: form.getTextField('FIR_DIA'),
+        	mes: form.getTextField('FIR_MES'),
+        	anyo: form.getTextField('FIR_ANYO'),
+        },
+      };
+      
+      const designacionDeRepresentanteFields = {
+      	dex: {
+          nombre: form.getTextField('DEX_NOMBRE'),
+          apellido_1: form.getTextField('DEX_APE1'),
+          apellido_2: form.getTextField('DEX_APE2'),
+          nacionalidad: form.getTextField('DEX_NACION'),
+          nie: form.getTextField('DEX_NIE'),
+          passport: form.getTextField('DEX_PASA'),
+          nacDia: form.getTextField('DEX_DIA_NAC'),
+          nacMes: form.getTextField('DEX_MES_NAC'),
+          nacAnyo: form.getTextField('DEX_ANYO_NAC'),
+          localidad: form.getTextField('DEX_LOCAL_PAIS'),
+          pais: form.getTextField('DEX_PAIS'),
+          padreNombre: form.getTextField('DEX_NP'),
+          madreNombre: form.getTextField('DEX_NM'),
+          ec: form.getCheckBox('DEX_EC'),
+          addressDomicilio: form.getTextField('DEX_DOMIC'),
+          addressNum: form.getTextField('DEX_NUM'),
+          addressPiso: form.getTextField('DEX_PISO'),
+          addressCp: form.getTextField('DEX_CP'),
+          addressLocalidad: form.getTextField('DEX_LOCAL'),
+          addressProvincia: form.getTextField('DEX_PROV'),
+          phone: form.getTextField('DEX_TFNO'),
+          email: form.getTextField('DEX_EMAIL'),
+        },
+        residenceType: form.getTextField('RESIDENCE_TYPE'),
+        dr: {
+          nie: form.getTextField('DR_NIE'),
+          razonSocial: form.getTextField('DR_RS'),
+          nombre: form.getTextField('DR_NOMBRE'),
+          apellido_1: form.getTextField('DR_APE1'),
+          apellido_1: form.getTextField('DR_APE2'),
+          addressDoicilio: form.getTextField('DR_DOMIC'),
+          addressNum: form.getTextField('DR_NUM'),
+          addressPiso: form.getTextField('DR_PISO'),
+          addressLocalidad: form.getTextField('DR_LOCAL'),
+          addressCp: form.getTextField('DR_CP'),
+          addressProvincia: form.getTextField('DR_PROV'),
+          phone: form.getTextField('DR_TFNO'),
+          email: form.getTextField('DR_EMAIL'),
+        },
+        fir: {
+        	provincia: form.getTextField('FIR_PROV'),
+        	dia: form.getTextField('FIR_DIA'),
+        	mes: form.getTextField('FIR_MES'),
+        	anyo: form.getTextField('FIR_ANYO'),
+        },
+      };
+      
+      const retaLetterFields = {
+      	dex: {
+          nombreApellidos: form.getTextField('DEX_NOM_APE'),
+        },
+        fir: {
+        	provincia: form.getTextField('FIR_PROV'),
+        	dia: form.getTextField('FIR_DIA'),
+        	mes: form.getTextField('FIR_MES'),
+        	anyo: form.getTextField('FIR_ANYO'),
+        },
+      };
+      
+      const mitFields = {
+      	// solicitud de autorización de residencia
+      	sa: form.getCheckBox('SA'),
+      	saSub: form.getCheckBox('SA_SUB'),
+        // tipo de autorización
+      	ta: form.getCheckBox('SA'),
+      	taSub: form.getCheckBox('SA_SUB'),
+        // datos del extranjero/a
+      	dex: {
+          passport: form.getTextField('DEX_PASA'),
+          nie_1: form.getTextField('DEX_NIE1'),
+          nie_2: form.getTextField('DEX_NIE_2'),
+          nie_3: form.getTextField('DEX_NIE_3'),
+          apellidos: form.getTextField('DEX_APE1'),
+          nombre: form.getTextField('DEX_NOMBRE'),
+          lugarNac: form.getTextField('DEX_LN'),
+          sexo: form.getCheckBox('DEX_SEXO'),
+          ec: form.getCheckBox('DEX_EC'),
+          nacDia: form.getTextField('DEX_DIA_NAC'),
+          nacMes: form.getTextField('DEX_MES_NAC'),
+          nacAnyo: form.getTextField('DEX_ANYO_NAC'),
+          pais: form.getTextField('DEX_PAIS'),
+          nacionalidad: form.getTextField('DEX_NACION'),
+          padreNombre: form.getTextField('DEX_NP'),
+          madreNombre: form.getTextField('DEX_NM'),
+          addressDomicilio: form.getTextField('DEX_DOMIC'),
+          addressNum: form.getTextField('DEX_NUM'),
+          addressPiso: form.getTextField('DEX_PISO'),
+          addressLocalidad: form.getTextField('DEX_LOCAL'),
+          addressCp: form.getTextField('DEX_CP'),
+          addressProvincia: form.getTextField('DEX_PROV'),
+          addressCountry: form.getTextField('DEX_PAISRES'),
+          phone: form.getTextField('DEX_TFNO'),
+          email: form.getTextField('DEX_EMAIL'),
+        },
+        // datos de la empresa/entidad en espana
+        dee: {
+          nombreRazonSocial: form.getTextField('DEE_NOM'),
+          dni: form.getTextField('DEE_DNI'),
+          actividad: form.getTextField('DEE_ACT'),
+          ocupacion: form.getTextField('DEE_OCUP'),
+          addressDomicilio: form.getTextField('DEE_DOMIC'),
+          addressNum: form.getTextField('DEE_NUM'),
+          addressPiso: form.getTextField('DEE_PISO'),
+          addressLocalidad: form.getTextField('DEE_LOCAL'),
+          addressCp: form.getTextField('DEE_CP'),
+          addressProvincia: form.getTextField('DEE_PROV'),
+          phone: form.getTextField('DEE_TFNO'),
+          email: form.getTextField('DEE_EMAIL'),
+          nombreRazonSocialDesplasa: form.getTextField('DEE_NRZE'),
+        },
+        dr: {
+          apellidos: form.getTextField('DR_APELLIDOS'),
+          nombre: form.getTextField('DR_NOMBRE'),
+          nie: form.getTextField('DR_DNI'),
+          phone: form.getTextField('DR_TFNO'),
+          email: form.getTextField('DR_EMAIL'),
+        },
+        nrc: form.getTextField('NRC_TITULAR'),
+        fir: {
+        	provincia: form.getTextField('FIR_PROV'),
+        	dia: form.getTextField('FIR_DIA'),
+        	mes: form.getTextField('FIR_MES'),
+        	anyo: form.getTextField('FIR_ANYO'),
+        },
+      };
+
+      // Fill in the basic info fields
+      declaracionPenalesFields.dex.nombreApellidos.setText('Arseniy Maximov')
+      declaracionPenalesFields.dex.nacionalidad.setText('Rusia')
+      declaracionPenalesFields.dex.passportNie.setText('1337')
+      declaracionPenalesFields.dex.addressDomicilio.setText('Vilanova i la Geltru')
+      declaracionPenalesFields.dex.addressCp.setText('08800')
+      declaracionPenalesFields.dex.addressLocalidad.setText('Carrer de la muralla, 26, 2')
+
+
+      // Serialize the PDFDocument to bytes (a Uint8Array)
+      const pdfBytes = await pdfDoc.save()
+
+			// Trigger the browser to download the PDF document
+      download(pdfBytes, "DECLARACION_DE_CARECER_ANTECEDENTES_DE_PENALES.pdf", "application/pdf");
+    }
+  </script>
+</html>
