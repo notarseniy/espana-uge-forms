@@ -1,7 +1,19 @@
-import { PDFDocument } from 'pdf-lib';
-import download from 'downloadjs';
+import { PDFDocument } from 'pdf-lib'
+import download from 'downloadjs'
 
-import './App.css';
+import { useFormik } from 'formik'
+
+import { styled } from '@mui/joy/styles';
+import Grid from '@mui/joy/Grid'
+import Typography from '@mui/joy/Typography'
+import FormControl from '@mui/joy/FormControl'
+import FormLabel from '@mui/joy/FormLabel'
+import Input from '@mui/joy/Input'
+import Select from '@mui/joy/Select'
+import Option from '@mui/joy/Option'
+import Button from '@mui/joy/Button'
+
+import './App.css'
 
 async function downloadPdf(url) {
   // Fetch the PDF with form fields
@@ -13,9 +25,578 @@ async function downloadPdf(url) {
   return pdfDoc;
 }
 
-function App() {
+const formConfig = [
+  {
+    prefixTitle: 'Titular',
+    titleEn: 'Applicant data',
+    titleRu: 'Данные заявителя',
+    name: 'dex',
+    fieldGroups: [
+      {
+        titleRu: 'Персональные данные',
+        titleEn: 'Personal data',
+        fields: [
+          {
+            name: 'nombre',
+            labelEn: 'Name',
+            labelRu: 'Имя',
+            labelEs: 'Nombre',
+            type: 'text',
+            required: true,
+            column: 6
+          },
+          {
+            name: 'apellido1',
+            labelEn: 'Surname',
+            labelRu: 'Фамилия',
+            labelEs: 'Apellido',
+            type: 'text',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'apellido2',
+            labelEn: '2-nd surname',
+            labelRu: '2-я фамилия',
+            labelEs: 'Apellido 2',
+            type: 'text',
+            required: false,
+            column: 6
+          },
+          {
+            name: 'nacionalidad',
+            labelEn: 'Nationality',
+            labelRu: 'Национальность',
+            labelEs: 'Nacionalidad',
+            type: 'text',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'pais',
+            labelEn: 'Country of birth',
+            labelRu: 'Страна рождения',
+            labelEs: 'País',
+            type: 'text',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'passport',
+            labelEn: 'Passport num.',
+            labelRu: 'Номер паспорта',
+            labelEs: 'Pasaporte',
+            type: 'text',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'nie',
+            labelEn: 'NIE',
+            type: 'text',
+            required: false,
+            column: 4
+          },
+          {
+            name: 'sexo',
+            labelEn: 'Sex',
+            labelRu: 'Пол',
+            labelEs: 'Sexo',
+            type: 'radio',
+            required: true,
+            column: 6,
+            options: [
+              {
+                value: 'H',
+                labelEn: 'Man',
+                labelRu: 'Мужской',
+                labelEs: 'Hombre',
+              },
+              {
+                value: 'M',
+                labelEn: 'Woman',
+                labelRu: 'Женский',
+                labelEs: 'Mujer',
+              },
+              {
+                value: 'X',
+                labelEn: 'Other',
+                labelRu: 'Другой',
+                labelEs: 'Otro',
+              },
+            ],
+          },
+          {
+            name: 'ec',
+            labelEn: 'Marital status',
+            labelRu: 'Семейное положение',
+            labelEs: 'Estado civil',
+            type: 'radio',
+            required: true,
+            column: 6,
+            options: [
+              {
+                value: 'S',
+                labelEn: 'Single',
+                labelRu: 'Холост',
+                labelEs: 'Soltero',
+              },
+              {
+                value: 'C',
+                labelEn: 'Married',
+                labelRu: 'Женат',
+                labelEs: 'Casado',
+              },
+              {
+                value: 'V',
+                labelEn: 'Widowed',
+                labelRu: 'Вдовец',
+                labelEs: 'Viudo',
+              },
+              {
+                value: 'D',
+                labelEn: 'Divorced',
+                labelRu: 'Разведен',
+                labelEs: 'Divorciado',
+              },
+              {
+                value: 'SP',
+                labelEn: 'Separated',
+                labelRu: 'Разделен',
+                labelEs: 'Separado',
+              },
+            ],
+          },
+          {
+            name: 'padreNombre',
+            labelEn: 'Father\'s name',
+            labelRu: 'Имя отца',
+            labelEs: 'Nombre del padre',
+            type: 'text',
+            required: true,
+            column: 8
+          },
+          {
+            name: 'madreNombre',
+            labelEn: 'Mother\'s name',
+            labelRu: 'Имя матери',
+            labelEs: 'Nombre de la madre',
+            type: 'text',
+            required: true,
+            column: 8
+          }
+        ],
+      },
+      {
+        titleRu: 'Дата и место рождения',
+        titleEn: 'Birth and place of birth',
+        fields: [
+          {
+            name: 'nacDia',
+            labelEn: 'Day',
+            labelRu: 'День',
+            labelEs: 'Día',
+            type: 'number',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'nacMes',
+            labelEn: 'Month',
+            labelRu: 'Месяц',
+            labelEs: 'Mes',
+            type: 'number',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'nacAnyo',
+            labelEn: 'Year',
+            labelRu: 'Год',
+            labelEs: 'Año',
+            type: 'number',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'nacLugar',
+            labelEn: 'Place of Birth',
+            labelRu: 'Место рождения по паспорту',
+            labelEs: 'Lugar de nacimiento',
+            type: 'text',
+            required: true,
+            column: 8
+          },
+        ],
+      },
+      {
+        titleRu: 'Адрес в Испании',
+        titleEn: 'Address in Spain',
+        fields: [
+          {
+            name: 'addressDomicilio',
+            labelEn: 'Address',
+            labelRu: 'Адрес',
+            labelEs: 'Domicilio',
+            type: 'text',
+            required: true,
+            column: 8
+          },
+          {
+            name: 'addressNum',
+            labelEn: 'House num.',
+            labelRu: 'Номер дома',
+            labelEs: 'Núm',
+            type: 'text',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'addressPiso',
+            labelEn: 'Door',
+            labelRu: 'Дверь',
+            labelEs: 'Piso',
+            type: 'text',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'addressLocalidad',
+            labelEn: 'City',
+            labelRu: 'Город',
+            labelEs: 'Localidad',
+            type: 'text',
+            required: true,
+            column: 6
+          },
+          {
+            name: 'addressProvincia',
+            labelEn: 'Province',
+            labelRu: 'Провинция',
+            labelEs: 'Provincia',
+            type: 'text',
+            required: true,
+            column: 5
+          },
+          {
+            name: 'addressCp',
+            labelEn: 'Postal Code',
+            labelRu: 'Почтовый индекс',
+            labelEs: 'Código Postal',
+            type: 'text',
+            required: true,
+            column: 5
+          },
+        ],
+      },
+      {
+        titleRu: 'Контактные данные',
+        titleEn: 'Contact information',
+        fields: [
+          {
+            name: 'phone',
+            labelEn: 'Phone Number',
+            labelRu: 'Телефон',
+            labelEs: 'Teléfono de contacto',
+            type: 'text',
+            required: true,
+            column: 6
+          },
+          {
+            name: 'email',
+            labelEn: 'Email',
+            type: 'text',
+            required: true,
+            column: 6
+          },
+        ],
+      },
+    ],
+  },
+  {
+    titleEn: 'Representative data',
+    titleRu: 'Данные представителя',
+    titleEs: 'Datos del representante',
+    name: 'dr',
+    fieldGroups: [
+      {
+        titleRu: 'Персональные данные',
+        titleEn: 'Personal data',
+        fields: [
+          {
+            name: 'nombre',
+            labelEn: 'Name',
+            labelRu: 'Имя',
+            labelEs: 'Nombre',
+            type: 'text',
+            required: true,
+            column: 6
+          },
+          {
+            name: 'apellido1',
+            labelEn: 'Surname',
+            labelRu: 'Фамилия',
+            labelEs: 'Apellido',
+            type: 'text',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'apellido2',
+            labelEn: '2-nd surname',
+            labelRu: '2-я фамилия',
+            labelEs: 'Apellido 2',
+            type: 'text',
+            required: false,
+            column: 6
+          },
+          {
+            name: 'nie',
+            labelEn: 'NIE',
+            type: 'text',
+            required: true,
+            column: 4
+          },
+        ],
+      },
+      {
+        titleRu: 'Адрес в Испании',
+        titleEn: 'Address in Spain',
+        fields: [
+          {
+            name: 'addressDomicilio',
+            labelEn: 'Address',
+            labelRu: 'Адрес',
+            labelEs: 'Domicilio',
+            type: 'text',
+            required: true,
+            column: 8
+          },
+          {
+            name: 'addressNum',
+            labelEn: 'House num.',
+            labelRu: 'Номер дома',
+            labelEs: 'Núm',
+            type: 'text',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'addressPiso',
+            labelEn: 'Door',
+            labelRu: 'Дверь',
+            labelEs: 'Piso',
+            type: 'text',
+            required: true,
+            column: 4
+          },
+          {
+            name: 'addressLocalidad',
+            labelEn: 'City',
+            labelRu: 'Город',
+            labelEs: 'Localidad',
+            type: 'text',
+            required: true,
+            column: 6
+          },
+          {
+            name: 'addressProvincia',
+            labelEn: 'Province',
+            labelRu: 'Провинция',
+            labelEs: 'Provincia',
+            type: 'text',
+            required: true,
+            column: 5
+          },
+          {
+            name: 'addressCp',
+            labelEn: 'Postal Code',
+            labelRu: 'Почтовый индекс',
+            labelEs: 'Código Postal',
+            type: 'text',
+            required: true,
+            column: 5
+          },
+        ],
+      },
+      {
+        titleRu: 'Контактные данные',
+        titleEn: 'Contact information',
+        fields: [
+          {
+            name: 'phone',
+            labelEn: 'Phone Number',
+            labelRu: 'Телефон',
+            labelEs: 'Teléfono de contacto',
+            type: 'text',
+            required: true,
+            column: 6
+          },
+          {
+            name: 'email',
+            labelEn: 'Email',
+            type: 'text',
+            required: true,
+            column: 6
+          },
+        ],
+      },
+    ],
+  },
+  {
+    titleEn: 'Signature of documents',
+    titleRu: 'Подпись документов',
+    name: 'fir',
+    fieldGroups: [
+      {
+        fields: [
+          {
+            name: 'provincia',
+            labelEn: 'Province',
+            labelRu: 'Провинция',
+            labelEs: 'Provincia',
+            type: 'text',
+            required: true,
+            column: 7
+          },
+          {
+            name: 'dia',
+            labelEn: 'Day',
+            labelRu: 'День',
+            labelEs: 'Día',
+            type: 'number',
+            required: true,
+            column: 3,
+            defaultValue: new Date().getDate(),
+          },
+          {
+            name: 'mes',
+            labelEn: 'Month',
+            labelRu: 'Месяц',
+            labelEs: 'Mes',
+            type: 'number',
+            required: true,
+            column: 3,
+            defaultValue: new Date().getMonth() + 1,
+          },
+          {
+            name: 'anyo',
+            labelEn: 'Year',
+            labelRu: 'Год',
+            labelEs: 'Año',
+            type: 'number',
+            required: true,
+            column: 3,
+            defaultValue: new Date().getFullYear(),
+          },
+        ],
+      },
+    ],
+  },
+]
 
-  async function handleButtonClick() {
+/*
+[
+  
+]
+*/
+
+function App() {
+  const form = useFormik({
+    initialValues: generateInitialValues(formConfig),
+    // validationSchema: validationSchema,
+    onSubmit: handleButtonClick
+  })
+
+  function generateInitialValues(formConfig) {
+    const initialValues = {}
+    formConfig.forEach((section) => {
+      section.fieldGroups.forEach((fieldGroup) => {
+        fieldGroup.fields.forEach((field) => {
+          const fieldName = `${section.name}_${field.name}`;
+          initialValues[fieldName] = field.defaultValue || ''
+        })
+      })
+    })
+    return initialValues
+  }
+
+  function generateForm(formConfig, form) {
+    return formConfig.map((section, index) => {
+      return (
+        <div
+          key={index}
+          style={{
+            marginBottom: '20px'
+          }}
+        >
+          <Typography level="h2" sx={{ marginBottom: '10px' }}>
+            {section.prefixTitle ? `${section.prefixTitle}: ` : ''}{section.titleEn}{section.titleRu ? ` / ${section.titleRu}` : ''}
+          </Typography>
+          {section.fieldGroups.map((fieldGroup, index) => {
+            return (
+              <>
+                {fieldGroup.titleEn ? (
+                  <Typography level="h3" sx={{ marginBottom: '15px' }}>
+                    {fieldGroup.titleEn}{fieldGroup.titleRu ? ` / ${fieldGroup.titleRu}` : ''}
+                  </Typography>
+                ) : null}
+                <Grid
+                  container
+                  spacing={1}
+                  columns={16}
+                  sx={{
+                    flexGrow: 1,
+                    marginBottom: '15px',
+                  }}
+                >
+                  {fieldGroup.fields.map((field, index) => {
+                    const fieldName = `${section.name}_${field.name}`;
+                    return (
+                      <Grid
+                        xs={field.column}
+                      >
+                        <FormControl>
+                          <FormLabel>
+                            {field.labelEn}{field.labelRu ? ` / ${field.labelRu}` : ''}
+                          </FormLabel>
+                          {field.type === 'radio' ? (
+                            <Select
+                              id={field.name}
+                              name={`${section.name}_${field.name}`}
+                              value={form.values[fieldName]}
+                              placeholder={field.labelEs || field.labelEn}
+                              onChange={form.handleChange}
+                            >
+                              {field.options.map((option, index) => (
+                                <Option key={index} value={option.value}>
+                                  {option.labelEn} / {option.labelRu} / {option.labelEs}
+                                </Option>
+                              ))}
+                            </Select>
+                          ) : (
+                            <Input
+                              id={field.name}
+                              name={`${section.name}_${field.name}`}
+                              value={form.values[fieldName]}
+                              placeholder={field.labelEs || field.labelEn}
+                              onChange={form.handleChange}
+                            />
+                          )}
+                        </FormControl>
+                      </Grid>
+                    )
+                  })}
+                </Grid>
+              </>
+            )
+          })}
+        </div>
+      );
+    })
+  }
+
+  async function handleButtonClick(values) {
     const declaracionPenalesPdf = await downloadPdf(process.env.PUBLIC_URL + '/files/DECLARACION_DE_CARECER_ANTECEDENTES_DE_PENALES.pdf')
     const designacionDeRepresentantePdf = await downloadPdf(process.env.PUBLIC_URL + '/files/DESIGNACION_DE_REPRESENTANTE.pdf')
     const retaLetterPdf = await downloadPdf(process.env.PUBLIC_URL + '/files/RETA_LETTER.pdf')
@@ -56,7 +637,7 @@ function App() {
         nacDia: designacionDeRepresentanteForm.getTextField('DEX_DIA_NAC'),
         nacMes: designacionDeRepresentanteForm.getTextField('DEX_MES_NAC'),
         nacAnyo: designacionDeRepresentanteForm.getTextField('DEX_ANYO_NAC'),
-        localidad: designacionDeRepresentanteForm.getTextField('DEX_LOCAL_PAIS'),
+        nacLugar: mitForm.getTextField('DEX_LN'),
         pais: designacionDeRepresentanteForm.getTextField('DEX_PAIS'),
         padreNombre: designacionDeRepresentanteForm.getTextField('DEX_NP'),
         madreNombre: designacionDeRepresentanteForm.getTextField('DEX_NM'),
@@ -121,7 +702,7 @@ function App() {
         nie_3: mitForm.getTextField('DEX_NIE_3'),
         apellidos: mitForm.getTextField('DEX_APE1'),
         nombre: mitForm.getTextField('DEX_NOMBRE'),
-        lugarNac: mitForm.getTextField('DEX_LN'),
+        nacLugar: mitForm.getTextField('DEX_LN'),
         sexo: mitForm.getRadioGroup('DEX_SEXO'),
         ec: mitForm.getRadioGroup('DEX_EC'),
         nacDia: mitForm.getTextField('DEX_DIA_NAC'),
@@ -190,14 +771,23 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <p>Click the button to fill form fields in an existing PDF document with <code>pdf-lib</code></p>
-      <button
+    <div
+      className="App"
+    >
+      <Typography level="h1">
+        UGE Form Generator
+      </Typography>
+      <Typography level="h3" sx={{ marginBottom: '20px' }}>
+        by <a href="https://t.me/notarseniy">@notarseniy</a>
+      </Typography>
+
+      {generateForm(formConfig, form)}
+
+      <Button
         onClick={handleButtonClick}
       >
-        Fill PDF
-      </button>
-      <p className="small">(Your browser will download the resulting file)</p>
+        Fill PDFs
+      </Button>
     </div>
   );
 }
